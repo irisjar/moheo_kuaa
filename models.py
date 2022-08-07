@@ -1,9 +1,10 @@
 
 class Usuario:
-    def __init__(self, ciruc, nombre,  celular, direccion, ciudad, departamento, has, obs, usuario, senha, id=None):
+    def __init__(self, ciruc, nombre, email, celular, direccion, ciudad, departamento, has, obs, usuario, senha, id=None):
         self.id = id
         self.ciruc = ciruc
         self.nombre = nombre
+        self.email = email
         self.celular = celular
         self.direccion = direccion
         self.ciudad = ciudad
@@ -41,10 +42,12 @@ class Solicitud_detalle:
 
 
 class Reporte:
-    def __init__(self, id_solicitud_detalle, nombre_cultivo, h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12, h13, h14,
+    def __init__(self,id_solicitud, id_solicitud_detalle, id_cultivo, nombre_cultivo, h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12, h13, h14,
                  h15, h16, h17, h18, h19, h20, h21, h22, h23, registro_reporte, id=None):
         self.id = id
+        self.id_solicitud = id_solicitud
         self.id_solicitud_detalle = id_solicitud_detalle
+        self.id_cultivo = id_cultivo
         self.nombre_cultivo = nombre_cultivo
         self.h0 = h0
         self.h1 = h1
