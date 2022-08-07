@@ -1,10 +1,10 @@
 from models import Usuario, Cultivo, Solicitud, Solicitud_detalle, Reporte
 
-SQL_USUARIO_POR_ID = 'SELECT id, ciruc, nombre,  celular, direccion, ciudad, departamento, has, obs, usuario, senha FROM usuario WHERE id = %s'
-SQL_USUARIO_POR_USUARIO = 'SELECT id, ciruc, nombre,  celular, direccion, ciudad, departamento, has, obs, usuario, senha FROM usuario WHERE usuario = %s'
-SQL_BUSCA_USUARIOS = 'SELECT id, ciruc, nombre,  celular, direccion, ciudad, departamento, has, obs, usuario, senha FROM usuario'
+SQL_USUARIO_POR_ID = 'SELECT id, ciruc, nombre, email,  celular, direccion, ciudad, departamento, has, obs, usuario, senha FROM usuario WHERE id = %s'
+SQL_USUARIO_POR_USUARIO = 'SELECT id, ciruc, nombre,  email, celular, direccion, ciudad, departamento, has, obs, usuario, senha FROM usuario WHERE usuario = %s'
+SQL_BUSCA_USUARIOS = 'SELECT id, ciruc, nombre, email, celular, direccion, ciudad, departamento, has, obs, usuario, senha FROM usuario'
 SQL_ACTUALIZA_USUARIO = 'UPDATE usuario SET  ciruc = %s, nombre = %s, email = %s, celular = %s, direccion = %s, ciudad = %s, departamento = %s, has = %s, obs = %s WHERE id = %s'
-SQL_CREA_USUARIO = 'INSERT INTO usuario (nombre, email, usuario, senha) VALUES ( %s, %s)'
+SQL_CREA_USUARIO = 'INSERT INTO usuario (nombre, email, usuario, senha) VALUES ( %s, %s, %s, %s)'
 
 SQL_DELETE_CULTIVO = 'DELETE FROM cultivo WHERE id = %s'
 SQL_CULTIVO_POR_ID = 'SELECT id, nombre_cultivo, descripcion_cultivo, necesidad_agua FROM cultivo WHERE id = %s'
@@ -22,7 +22,7 @@ SQL_CREA_SOLICITUD_DETALLE = 'INSERT INTO solicitud_detalle (id_solicitud, id_cu
 SQL_ACTUALIZA_SOLICITUD_DETALLE = 'UPDATE solicitud_detalle SET id_solicitud = %s, id_cultivo = %s, cantidad_plantas = %s  WHERE id = %s'
 SQL_SOLICITUD_DETALLES_POR_ID = 'SELECT id, id_solicitud, id_cultivo, cantidad_plantas  WHERE id = %s'
 
-SQL_CREA_REPORTE = 'INSERT INTO reporte (id_solicitud_detalle, nombre_cultivo, h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12, h13, h14, h15, h16, h17, h18, h19, h20, h21, h22, h23, registro_reporte) VALUES ( %s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s)'
+SQL_CREA_REPORTE = 'INSERT INTO reporte (id_solicitud,id_solicitud_detalle, id_cultivo, nombre_cultivo, h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12, h13, h14, h15, h16, h17, h18, h19, h20, h21, h22, h23, registro_reporte) VALUES ( %s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s)'
 
 
 # idPedido, idCombo, nombre, descripcion, precio, cantidad, subtotal, id=None
@@ -56,13 +56,13 @@ class UsuarioDao:
         cursor = self.__db.cursor()
         cursor.execute(SQL_USUARIO_POR_ID, (id,))
         tupla = cursor.fetchone()
-        return Usuario(tupla[1], tupla[2], tupla[3], tupla[4], tupla[5], tupla[6], tupla[7], tupla[8], tupla[9], tupla[10], id=tupla[0])
+        return Usuario(tupla[1], tupla[2], tupla[3], tupla[4], tupla[5], tupla[6], tupla[7], tupla[8], tupla[9], tupla[10], tupla[11], id=tupla[0])
 
     def busca_por_usuario(self, usuario):
         cursor = self.__db.cursor()
         cursor.execute(SQL_USUARIO_POR_USUARIO, (usuario,))
         tupla = cursor.fetchone()
-        return Usuario(tupla[1], tupla[2], tupla[3], tupla[4], tupla[5], tupla[6], tupla[7], tupla[8], tupla[9], tupla[10], id=tupla[0])
+        return Usuario(tupla[1], tupla[2], tupla[3], tupla[4], tupla[5], tupla[6], tupla[7], tupla[8], tupla[9], tupla[10], tupla[11], id=tupla[0])
 
 
 class CultivoDao:

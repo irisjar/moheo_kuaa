@@ -32,8 +32,8 @@ def listar_cultivos():
 
 @app.route('/nuevo_cultivo')
 def adicionar_cultivo():
-    if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
-        return redirect(url_for('login', proxima=url_for('adicionar_cultivo')))
+    # if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
+    # return redirect(url_for('login', proxima=url_for('adicionar_cultivo')))
     return render_template('adicionar_cultivo.html', titulo='Adicionar cultivo')
 
 
@@ -56,8 +56,8 @@ def remover_cultivo(id):
 
 @app.route('/editar_cultivo/<int:id>')
 def editar_cultivo(id):
-    if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
-        return redirect(url_for('login', proxima=url_for('editar_cultivo', id=id)))
+    # if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
+    # return redirect(url_for('login', proxima=url_for('editar_cultivo', id=id)))
 
     cultivo_editar = cultivo_dao.busca_por_id(id)
     return render_template('editar_cultivo.html', titulo='Editando cultivo', cultivo=cultivo_editar)
@@ -132,7 +132,7 @@ def login():
 
 @app.route('/autenticar', methods=['POST', ])
 def autenticar():
-    usuario = usuario_dao.busca_por_usuario("blanca")
+    usuario = usuario_dao.busca_por_usuario(request.form['usuario'])
     if usuario is not None and usuario.senha == request.form['senha']:
         session['usuario_conectado'] = usuario.id
         session['usuario_usuario'] = usuario.usuario
