@@ -1,0 +1,52 @@
+{% extends "template.html" %}
+{% block contenido %}
+ <script type='text/javascript'>
+
+</script>
+
+    <form action="" method="post">
+        <fieldset>
+          <div class="form-group">
+              <label class="label"> Pedido Nro: {{pedido.id}} </label>
+              <br><label>Cliente : {{ cliente.nombre}}</label>
+              <br><label>Documente : {{ cliente.ciruc}}</label>
+              <br><label>Celular : {{ cliente.celular}} </label>
+              <br><label>Direccion : {{ cliente.direccion}}</label>
+              <br><label>Indicaciones : {{ cliente.indicaciones}}</label>
+          </div>
+          <div class="form-group">
+              <table class="table table-striped table-responsive table-bordered table-light">
+        <thead>
+            <tr>
+                <th>Combo</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+                <th>Descripcion combo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for detalle in detalles %}
+               <tr>
+                   <td>{{ detalle.nombre }}</td>
+                   <td>{{ detalle.precio }}</td>
+                   <td>{{ detalle.cantidad}}</td>
+                   <td>{{ detalle.subtotal}}</td>
+                   <td>{{ detalle.descripcion }}</td>
+               </tr>
+              {% endfor %}
+                <tr>
+                    <td>Total</td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ pedido.total }}</td>
+                </tr>
+        </tbody>
+              </table>
+          </div>
+              <br>
+
+          <a class="btn btn-danger" href="{{ url_for('listar_pedidos') }}">Volver</a>
+        </fieldset>
+    </form>
+{% endblock %}

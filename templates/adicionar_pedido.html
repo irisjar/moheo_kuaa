@@ -1,0 +1,45 @@
+{% extends "template.html" %}
+{% block contenido %}
+ <script type='text/javascript'>
+
+</script>
+
+    <form action="{{ url_for('crear_pedido') }}" method="post">
+        <fieldset>
+          <div class="form-group">
+            <label for="idCliente">Cliente</label>
+            <select name="idCliente" id="idCliente" class="selectpicker form-control">
+              {% for cliente in clientes %}
+              <option value="{{ cliente.id }}">{{ cliente.nombre }}</option>
+              {% endfor %}
+            </select>
+
+          </div>
+          <div class="form-group">
+              <table class="table table-striped table-responsive table-bordered table-light">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Combo</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for combo in combos %}
+               <tr>
+                   <td><input type="checkbox"  name='comboId_{{combo.id}}' value="{{ combo.id }}"></td>
+                   <td>{{ combo.nombre }}</td>
+                   <td><input type="text"  name="precio_{{combo.id}}" readonly value="{{combo.precio}}"></td>
+                   <td><input type="text" name="cantidad_{{combo.id}}" value=""></td>
+               </tr>
+              {% endfor %}
+        </tbody>
+              </table>
+          </div>
+              <br>
+          <button type="submit" class="btn btn-primary btn-salvar">Guardar</button>
+          <a class="btn btn-danger" href="{{ url_for('listar_pedidos') }}">Volver</a>
+        </fieldset>
+    </form>
+{% endblock %}

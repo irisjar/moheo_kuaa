@@ -1,0 +1,30 @@
+{% extends "template.html" %}
+{% block contenido %}
+    <form action="{{ url_for('actualizar_cliente') }}" method="post">
+        <fieldset>
+            <input type="hidden" name="id" value="{{ cliente.id }}">
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" value="{{ cliente.nombre }}" required class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="ciruc">C&eacute;dula/Ruc</label>
+            <input type="text" id="ciruc" name="ciruc" value="{{ cliente.ciruc }}"  required class="form-control">
+          </div>
+           <div class="form-group">
+            <label for="celular">Celular</label>
+            <input type="text" id="celular" name="celular" value="{{ cliente.celular }}"  required class="form-control">
+          </div>
+           <div class="form-group">
+            <label for="direccion">Direcci&oacute;n</label>
+            <input type="text" id="direccion" name="direccion" value="{{ cliente.direccion }}"  class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="indicaciones">Indicaciones</label>
+            <textarea rows="4" cols="50" id="indicaciones" name="indicaciones" class="form-control">{{ cliente.indicaciones }}</textarea>
+          </div>
+           <button type="submit" class="btn btn-primary btn-salvar">Guardar</button>
+          <a class="btn btn-danger" href="{{ url_for('listar_clientes') }}">Volver</a>
+        </fieldset>
+    </form>
+{% endblock %}

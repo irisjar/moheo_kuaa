@@ -1,0 +1,22 @@
+{% extends "template.html" %}
+{% block contenido %}
+    <form action="{{ url_for('actualizar_combo') }}" method="post">
+        <fieldset>
+            <input type="hidden" name="id" value="{{ combo.id }}">
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" value="{{ combo.nombre }}" required class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="precio">Precio</label>
+            <input type="text" id="precio" name="precio" value="{{ combo.precio }}"  required class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="descripcion">Descripci&oacute;n</label>
+            <textarea rows="4" cols="50" id="descripcion" name="descripcion" class="form-control">{{ combo.descripcion }}</textarea>
+          </div>
+           <button type="submit" class="btn btn-primary btn-salvar">Guardar</button>
+          <a class="btn btn-danger" href="{{ url_for('listar_combos') }}">Volver</a>
+        </fieldset>
+    </form>
+{% endblock %}
