@@ -4,7 +4,7 @@ SQL_USUARIO_POR_ID = 'SELECT id, ciruc, nombre, email,  celular, direccion, ciud
 SQL_USUARIO_POR_USUARIO = 'SELECT id, ciruc, nombre,  email, celular, direccion, ciudad, departamento, has, obs, usuario, senha FROM usuario WHERE usuario = %s'
 SQL_BUSCA_USUARIOS = 'SELECT id, ciruc, nombre, email, celular, direccion, ciudad, departamento, has, obs, usuario, senha FROM usuario'
 SQL_ACTUALIZA_USUARIO = 'UPDATE usuario SET  ciruc = %s, nombre = %s, email = %s, celular = %s, direccion = %s, ciudad = %s, departamento = %s, has = %s, obs = %s WHERE id = %s'
-SQL_CREA_USUARIO = 'INSERT INTO usuario (nombre, email, usuario, senha) VALUES ( %s, %s, %s, %s)'
+SQL_CREA_USUARIO = 'INSERT INTO usuario (ciruc, nombre, email, usuario, senha) VALUES ( %s, %s, %s, %s, %s)'
 
 SQL_DELETE_CULTIVO = 'DELETE FROM cultivo WHERE id = %s'
 SQL_CULTIVO_POR_ID = 'SELECT id, nombre_cultivo, descripcion_cultivo, necesidad_agua FROM cultivo WHERE id = %s'
@@ -40,7 +40,7 @@ class UsuarioDao:
             cursor.execute(SQL_ACTUALIZA_USUARIO, (usuario.ciruc, usuario.nombre, usuario.email, usuario.celular,
                            usuario.direccion, usuario.ciudad, usuario.departamento, usuario.has, usuario.obs, usuario.id))
         else:
-            cursor.execute(SQL_CREA_USUARIO, (usuario.nombre,
+            cursor.execute(SQL_CREA_USUARIO, (usuario.ciruc, usuario.nombre,
                            usuario.email, usuario.usuario, usuario.senha))
             usuario.id = cursor.lastrowid
         self.__db.commit()
@@ -165,7 +165,7 @@ class Solicitud_detalleDao:
 
 def traduce_usuarios(usuarios):
     def crea_usuario_con_tupla(tupla):
-        return Usuario(tupla[1], tupla[2], tupla[3], tupla[4], tupla[5], tupla[6], tupla[7], tupla[8], tupla[9], tupla[10], id=tupla[0])
+        return Usuario(tupla[1], tupla[2], tupla[3], tupla[4], tupla[5], tupla[6], tupla[7], tupla[8], tupla[9], tupla[10], tupla[11], id=tupla[0])
     return list(map(crea_usuario_con_tupla, usuarios))
 
 
