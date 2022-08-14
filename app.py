@@ -41,25 +41,84 @@ def saveUser():
     return render_template('login.html', titulo='Login')
 
 
+@app.route('/edit_user')
+def editUser():
+    if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
+        return redirect(url_for('login', proxima=url_for('editUser')))
+
+    id = session['usuario_id']
+    usuario = usuario_dao.busca_por_id(id)
+    return render_template('editUser.html', titulo='Editar usuario', usuario=usuario)
+
+
+@app.route('/update_user', methods=['POST', ])
+def updateUser():
+    if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
+        return redirect(url_for('login', proxima=url_for('editUser')))
+
+    id = session['usuario_id']
+    nombre = request.form['name']
+    email = request.form['email']
+    ciruc = request.form['ciruc']
+    celular = request.form['celular']
+    direccion = request.form['direccion']
+    ciudad = request.form['ciudad']
+    departamento = request.form['departamento']
+    has = request.form['has']
+    usuario = Usuario(ciruc, nombre, email, celular, direccion,
+                      ciudad, departamento, has, '', '', '', id)
+    usuario_dao.salvar(usuario)
+    return render_template('home.html', titulo='Home')
+
+
+@app.route('/edit_password')
+def editPass():
+    if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
+        return redirect(url_for('login', proxima=url_for('editPass')))
+
+    id = session['usuario_id']
+    usuario = usuario_dao.busca_por_id(id)
+    return render_template('editPass.html', titulo='Editar password', usuario=usuario)
+
+
+@app.route('/update_password', methods=['POST', ])
+def updatePass():
+    if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
+        return redirect(url_for('login', proxima=url_for('editPass')))
+
+    id = session['usuario_id']
+    senha = request.form['senha']
+
+    usuario_dao.salvar_senha(id, senha)
+    return render_template('home.html', titulo='Home')
+
+
 @app.route('/listar_solicitudes')
 def listar_solicitudes():
     listar_solicitudes = solicitud_dao.listar_solicitudes_productores
     return render_template('listar_solicitud.html', titulo='Lista de solicitudes', pedidos=listar_solicitudes)
 
 
-@app.route('/nueva_solicitud')
-def adicionar_solicitud():
+@app.route('/new_calculation')
+def newCalculation():
     if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
-        return redirect(url_for('login', proxima=url_for('adicionar_solicitud')))
-    usuarios = usuario_dao.listar()
+        return redirect(url_for('login', proxima=url_for('newCalculation')))
+
+    usuario = usuario_dao.busca_por_id(id=session['usuario_id'])
     cultivos = cultivo_dao.listar()
-    return render_template('adicionar_solicitud.html', titulo='Adicionar solicitud', usuarios=usuarios, cultivos=cultivos)
+    return render_template('newCalculation.html', titulo='Cancular', usuarios=usuario, cultivos=cultivos)
 
 
-@app.route('/crear_solicitud', methods=['POST', ])
-def crear_solicitud():
-    id_usuario = request.form['id_usuario']
-    solicitud = Solicitud(id_usuario, 0, 0, 0, 0, 0)
+@app.route('/save_calculation', methods=['POST', ])
+def saveCalculation():
+    id_usuario = session['usuario_id']
+    has_cultivadas = request.form['has_cultivadas']
+    agua_disponible = request.form['agua_disponible']
+    horas_riego = request.form['horas_riego']
+    hora_inicio = request.form['hora_inicio']
+
+    solicitud = Solicitud(id_usuario, has_cultivadas,
+                          agua_disponible, horas_riego, 0, hora_inicio)
     solicitud_dao.salvar(solicitud)
     # salvar detalles
     cultivos = cultivo_dao.listar()
@@ -73,13 +132,15 @@ def crear_solicitud():
 
             print(cultivoId + ' cantidad_plantas ' + cantidad_plantas)
             solicitud_detalle = Solicitud_detalle(
-                solicitud.id, solicitud.id, cultivo.id, cantidad_plantas)
+                solicitud.id, cultivo.id, cantidad_plantas)
             solicitud_detalle_dao.salvar(solicitud_detalle)
 
-    return redirect(url_for('listar_solicitudes'))
+    # Calculo GEKKO
+
+    return redirect(url_for('show_report'))
 
 
-@app.route('/detalle_pedido/<int:id>')
+@app.route('/detalle_solicitud/<int:id>')
 def detalle_solicitud(id):
     if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
         return redirect(url_for('login', proxima=url_for('detalle_solicitud')))
@@ -100,7 +161,8 @@ def login():
 def autenticar():
     usuario = usuario_dao.busca_por_usuario(request.form['usuario'])
     if usuario is not None and usuario.senha == request.form['senha']:
-        session['usuario_conectado'] = usuario.id
+        session['usuario_conectado'] = True
+        session['usuario_id'] = usuario.id
         session['usuario_usuario'] = usuario.usuario
         flash(usuario.nombre + ' conectado con éxito!')
         proxima = request.form['proxima']
@@ -118,16 +180,19 @@ def logout():
     flash('Ningún usuario conectado!')
     return redirect(url_for('home'))
 
+
 @app.route('/listCropType')
 def listCropType():
     listCropType = cultivo_dao.listar()
     return render_template('listCropType.html', titulo='Tipos de cultivos', cropTypes=listCropType)
+
 
 @app.route('/newCropType')
 def newCropType():
     # if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
     # return redirect(url_for('login', proxima=url_for('adicionar_cultivo')))
     return render_template('newCropType.html', titulo='Agregar nuevo tipo de cultivo')
+
 
 @app.route('/saveNewCropType', methods=['POST', ])
 def saveNewCropType():
@@ -137,6 +202,7 @@ def saveNewCropType():
     cultivo = Cultivo(nombre_cultivo, descripcion_cultivo, necesidad_agua)
     cultivo_dao.salvar(cultivo)
     return redirect(url_for('listCropType'))
+
 
 @app.route('/updateCropType/<int:id>')
 def updateCropType(id):
@@ -159,13 +225,11 @@ def saveCropTypeUpdated():
     return redirect(url_for('listCropType'))
 
 
-
 @app.route('/removeCropType/<int:id>')
 def removeCropType(id):
     cultivo_dao.deletar(id)
     flash('El tipo de cultivo fue eliminado')
     return redirect(url_for('listCropType'))
-
 
 
 if __name__ == '__main__':

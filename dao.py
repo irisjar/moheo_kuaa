@@ -5,6 +5,7 @@ SQL_USUARIO_POR_USUARIO = 'SELECT id, ciruc, nombre,  email, celular, direccion,
 SQL_BUSCA_USUARIOS = 'SELECT id, ciruc, nombre, email, celular, direccion, ciudad, departamento, has, obs, usuario, senha FROM usuario'
 SQL_ACTUALIZA_USUARIO = 'UPDATE usuario SET  ciruc = %s, nombre = %s, email = %s, celular = %s, direccion = %s, ciudad = %s, departamento = %s, has = %s, obs = %s WHERE id = %s'
 SQL_CREA_USUARIO = 'INSERT INTO usuario (ciruc, nombre, email, usuario, senha) VALUES ( %s, %s, %s, %s, %s)'
+SQL_ACTUALIZA_USUARIO_PASS = 'UPDATE usuario SET  senha = %s where id=%s'
 
 SQL_DELETE_CULTIVO = 'DELETE FROM cultivo WHERE id = %s'
 SQL_CULTIVO_POR_ID = 'SELECT id, nombre_cultivo, descripcion_cultivo, necesidad_agua FROM cultivo WHERE id = %s'
@@ -32,6 +33,16 @@ SQL_BUSCA_SOLICITUD_DETALLES_CULTIVOS = 'SELECT sd.id, sd.id_solicitud, sd.id_cu
 class UsuarioDao:
     def __init__(self, db):
         self.__db = db
+
+    def salvar_senha(self, id, senha):
+        cursor = self.__db.cursor()
+        if(id):
+            cursor.execute(SQL_ACTUALIZA_USUARIO_PASS, (senha, id))
+        else:
+            return False
+
+        self.__db.commit()
+        return True
 
     def salvar(self, usuario):
         cursor = self.__db.cursor()
