@@ -168,6 +168,11 @@ def logout():
     session['usuario_conectado'] = None
     flash('Ningún usuario conectado!')
     return redirect(url_for('home'))
+    
+@app.route('/listCropType')
+def listCropType():
+    listCropType = cultivo_dao.listar()
+    return render_template('listCropType.html', titulo='Tipos de cultivos', cropTypes=listCropType)
 
 
 if __name__ == '__main__':
