@@ -1,0 +1,12 @@
+{% extends "template.html" %}
+{% block contenido %}
+<div class="container">
+    <h1>Haga su login</h1>
+    <form method="POST" action="{{ url_for('autenticar') }}">
+        <input type="hidden" name="proxima" value="{{ proxima or url_for('home') }}">
+        <p><label>Nombre del usuarios:</label> <input class="form-control" type="text" name="usuario" required></p>
+        <p><label>Contraseña:</label> <input class="form-control" type="password" name="senha" required></p>
+        <p><button class="btn btn-primary" type="submit">Entrar</button></p>
+    </form>
+</div>
+{% endblock %}

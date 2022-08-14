@@ -24,6 +24,23 @@ def home():
     return render_template('home.html', titulo='')
 
 
+@app.route('/new_user')
+def newUser():
+    return render_template('newUser.html', titulo='Registrar usuario')
+
+
+@app.route('/save_user', methods=['POST', ])
+def saveUser():
+    nombre = request.form['name']
+    email = request.form['email']
+    usuario = request.form['username']
+    senha = request.form['password']
+    usuario = Usuario('0', nombre, email, '', '',
+                      '', '', '', '', usuario, senha)
+    usuario_dao.salvar(usuario)
+    return render_template('login.html', titulo='Login')
+
+
 @app.route('/listar_cultivos')
 def listar_cultivos():
     listar_cultivos = cultivo_dao.listar()
