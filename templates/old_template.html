@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Examen Blanca</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.css') }}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <a class="navbar-brand" href="{{ url_for('home') }}">GRANJA</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarColor01">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('listar_cultivos') }}">Clientes</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('listar_solicitudes')}}">Pedidos</a>
+      </li>
+       <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('logout')}}">Logout</a>
+      </li>
+    </ul>
+  </div>
+
+</nav><br>
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul id="messages" class="list-unstyled">
+                    {% for message in messages %}
+                        <li class="alert alert-success">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        <div class="page-header">
+            <h3>{{ titulo }}</h3>
+        </div>
+
+        {% block contenido %}{% endblock %}
+    </div>
+
+</body>
+</html>
