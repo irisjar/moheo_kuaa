@@ -1,0 +1,38 @@
+{% extends "template.html" %}
+{% block contenido %}
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <br>
+                <div class="card-body">    
+                  <!-- Vertical Form -->
+                  <form class="row g-3" method="post" action="{{ url_for('saveNewCropType') }}">
+                    <div class="col-12">
+                      <label for="nombre_cultivo" class="form-label">Tipo de cultivo</label>
+                      <input class="form-control" type="text" id="nombre_cultivo" name="nombre_cultivo" required>
+                    </div>
+                    <div class="col-12">
+                      <label for="descripcion_cultivo" class="form-label">Descripción</label>
+                      <input type="text" id="descripcion_cultivo" name="descripcion_cultivo" required class="form-control">
+                    </div>
+         
+                    <div class="col-12">
+                      <label for="necesidad_agua" class="form-label">Necesidad de Agua</label>
+                      <input type="text" id="necesidad_agua" name="necesidad_agua" required
+                      class="form-control"></div>
+                    <div class="text-center" style="align-content: right;">
+                      <button type="submit" class="btn btn-primary">Guardar</button>
+                      <a class="btn btn-danger" href="{{ url_for('listCropType') }}">Volver</a>
+                    </div>
+                  </form><!-- Vertical Form -->
+    
+                </div>
+              </div>
+            
+        </div>
+    </div>
+</section>
+
+{% endblock %}
