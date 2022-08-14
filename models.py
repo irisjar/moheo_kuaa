@@ -23,9 +23,9 @@ class Cultivo:
 
 
 class Solicitud:
-    def __init__(self, id_productor, has_cultivadas, agua_disponible, horas_riego, lineas_riego, hora_inicio, id=None):
+    def __init__(self, id_usuario, has_cultivadas, agua_disponible, horas_riego, lineas_riego, hora_inicio, id=None):
         self.id = id
-        self.id_productor = id_productor
+        self.id_usuario = id_usuario
         self.has_cultivadas = has_cultivadas
         self.agua_disponible = agua_disponible
         self.horas_riego = horas_riego
