@@ -261,13 +261,19 @@ def saveNewCalc():
         solicitud_detalle_dao.salvar(solicitud_detalle)
  
 
-    return redirect(url_for('home'))
+    return redirect(url_for('showCalcResult', requestId=solicitud.id))
 
 
     # Calculo GEKKO
 
     # return redirect(url_for('show_report'))
 
+@app.route('/showCalcResult/<int:requestId>')
+def showCalcResult(requestId):
+    # if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
+    # return redirect(url_for('login', proxima=url_for('adicionar_cultivo')))
+   # listCropType = cultivo_dao.listar()
+    return render_template('showCalcResult.html', titulo='Calculo de riego')
 
 @app.route('/newCalcdd')
 def newCasslc():
