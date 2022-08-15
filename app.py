@@ -250,19 +250,18 @@ def saveNewCalc():
     hora_inicio = request.form['hora_inicio']
 
     solicitud = Solicitud(id_usuario, has_cultivadas,
-           agua_disponible, horas_riego, 0, hora_inicio)
+                          agua_disponible, horas_riego, 0, hora_inicio)
     solicitud_dao.salvar(solicitud)
     # salvar detalles
     crops = request.form.getlist('cultivoId[]')
     plantsQ = request.form.getlist('cantidad_plantas[]')
 
-    for crop_id, crop_value in enumerate(crops) :
-        solicitud_detalle = Solicitud_detalle(solicitud.id, crop_value, plantsQ[crop_id])
+    for crop_id, crop_value in enumerate(crops):
+        solicitud_detalle = Solicitud_detalle(
+            solicitud.id, crop_value, plantsQ[crop_id])
         solicitud_detalle_dao.salvar(solicitud_detalle)
- 
 
     return redirect(url_for('showCalcResult', requestId=solicitud.id))
-
 
     # Calculo GEKKO
 
