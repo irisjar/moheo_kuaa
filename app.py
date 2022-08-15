@@ -1,3 +1,4 @@
+from unittest.mock import create_autospec
 import psycopg2
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from models import Usuario, Cultivo, Solicitud, Solicitud_detalle, Reporte
@@ -16,7 +17,7 @@ usuario_dao = UsuarioDao(conn)
 cultivo_dao = CultivoDao(conn)
 solicitud_dao = SolicitudDao(conn)
 solicitud_detalle_dao = Solicitud_detalleDao(conn)
-#reporte_dao = ReporteDao(conn)
+# reporte_dao = ReporteDao(conn)
 
 
 @app.route('/')
@@ -230,6 +231,52 @@ def removeCropType(id):
     cultivo_dao.deletar(id)
     flash('El tipo de cultivo fue eliminado')
     return redirect(url_for('listCropType'))
+
+
+@app.route('/newCalc')
+def newCalc():
+    # if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
+    # return redirect(url_for('login', proxima=url_for('adicionar_cultivo')))
+    listCropType = cultivo_dao.listar()
+    return render_template('newCalc.html', titulo='Solicitar nuevo calculo de riego', cropTypes=listCropType)
+
+
+@app.route('/saveNewCalc', methods=['POST', ])
+def saveNewCalc():
+    id_usuario = 5
+    has_cultivadas = 5
+    agua_disponible = request.form['agua_disponible']
+    horas_riego = request.form['horas_riego']
+    hora_inicio = request.form['hora_inicio']
+
+    solicitud = Solicitud(id_usuario, has_cultivadas,
+                          agua_disponible, horas_riego, 0, hora_inicio)
+    solicitud_dao.salvar(solicitud)
+    # salvar detalles
+    crops = request.form.getlist('cultivoId[]')
+    plantsQ = request.form.getlist('cantidad_plantas[]')
+
+    for crop_id, crop_value in enumerate(crops):
+        solicitud_detalle = Solicitud_detalle(
+            solicitud.id, crop_value, plantsQ[crop_id])
+        solicitud_detalle_dao.salvar(solicitud_detalle)
+
+    return redirect(url_for('home'))
+
+    # Calculo GEKKO
+
+    # return redirect(url_for('show_report'))
+
+
+@app.route('/newCalcdd')
+def newCasslc():
+    if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
+        return redirect(url_for('login', proxima=url_for('newCalc')))
+    id = session['usuario_id']
+
+    usuario = usuario_dao.busca_por_id(id=session['usuario_id'])
+    cultivos = cultivo_dao.listar()
+    return render_template('newCalc.html', titulo='Calcular', usuarios=usuario, cultivos=cultivos)
 
 
 if __name__ == '__main__':
