@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.secret_key = 'ucom'
 
 conn = psycopg2.connect(dbname='sys_riego', user='postgres',
-                        password='postgres', host='localhost', port=5432)
+                        password='MARCELAMCXY', host='localhost', port=5432)
 
 cur = conn.cursor()
 
@@ -22,7 +22,11 @@ solicitud_detalle_dao = Solicitud_detalleDao(conn)
 
 @app.route('/')
 def home():
+    if 'userConnected' not in session or session['userConnected'] == None:
+        return redirect(url_for('login', nextPage=url_for('home')))
     return render_template('home.html', titulo='')
+
+# USUARIOS
 
 
 @app.route('/new_user')
@@ -42,22 +46,22 @@ def saveUser():
     return render_template('login.html', titulo='Login')
 
 
-@app.route('/edit_user')
+@app.route('/editUser')
 def editUser():
-    if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
-        return redirect(url_for('login', proxima=url_for('editUser')))
+    if 'userConnected' not in session or session['userConnected'] == None:
+        return redirect(url_for('login', nextPage=url_for('editUser')))
 
-    id = session['usuario_id']
+    id = session['userId']
     usuario = usuario_dao.busca_por_id(id)
     return render_template('editUser.html', titulo='Editar usuario', usuario=usuario)
 
 
 @app.route('/update_user', methods=['POST', ])
 def updateUser():
-    if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
-        return redirect(url_for('login', proxima=url_for('editUser')))
+    if 'userConnected' not in session or session['userConnected'] == None:
+        return redirect(url_for('login', nextPage=url_for('editUser')))
 
-    id = session['usuario_id']
+    id = session['userId']
     nombre = request.form['name']
     email = request.form['email']
     ciruc = request.form['ciruc']
@@ -69,50 +73,90 @@ def updateUser():
     usuario = Usuario(ciruc, nombre, email, celular, direccion,
                       ciudad, departamento, has, '', '', '', id)
     usuario_dao.salvar(usuario)
+    flash('El usuario ' + usuario.usuario + ' se ha modificado con éxito!')
+
     return render_template('home.html', titulo='Home')
 
 
 @app.route('/edit_password')
 def editPass():
-    if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
-        return redirect(url_for('login', proxima=url_for('editPass')))
+    if 'userConnected' not in session or session['userConnected'] == None:
+        return redirect(url_for('login', nextPage=url_for('editPass')))
 
-    id = session['usuario_id']
+    id = session['userId']
     usuario = usuario_dao.busca_por_id(id)
     return render_template('editPass.html', titulo='Editar password', usuario=usuario)
 
 
 @app.route('/update_password', methods=['POST', ])
 def updatePass():
-    if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
-        return redirect(url_for('login', proxima=url_for('editPass')))
+    if 'userConnected' not in session or session['userConnected'] == None:
+        return redirect(url_for('login', nextPage=url_for('editPass')))
 
-    id = session['usuario_id']
+    id = session['userId']
     senha = request.form['senha']
 
     usuario_dao.salvar_senha(id, senha)
     return render_template('home.html', titulo='Home')
 
+# INGRESO Y AUTENTICACION
 
-@app.route('/listar_solicitudes')
+
+@app.route('/login')
+def login():
+    next = request.args.get('nextPage')
+    return render_template('login.html', nextPage=next)
+
+
+@app.route('/auth', methods=['POST', ])
+def auth():
+    usuario = usuario_dao.busca_por_usuario(request.form['usuario'])
+    if usuario is not None and usuario.senha == request.form['senha']:
+        session['userConnected'] = True
+        session['userId'] = usuario.id
+        session['username'] = usuario.usuario
+        session['userFullName'] = usuario.nombre
+        session['userHas'] = usuario.has
+
+        flash('El usuario ' + usuario.usuario + ' se ha conectado con éxito!')
+        nextPage = request.form['nextPage']
+        return redirect(nextPage)
+    else:
+        flash('No existe usuario conectado. Intentelo de nuevo!')
+        return redirect(url_for('login'))
+
+    return redirect(url_for('login'))
+
+
+@app.route('/logout')
+def logout():
+    session['userConnected'] = None
+    session['userId'] = None
+    session['username'] = None
+    session['userFullName'] = None
+    flash('Usuario desconectado con éxito!')
+    return redirect(url_for('home'))
+
+
+'''@app.route('/listar_solicitudes')
 def listar_solicitudes():
     listar_solicitudes = solicitud_dao.listar_solicitudes_productores
     return render_template('listar_solicitud.html', titulo='Lista de solicitudes', pedidos=listar_solicitudes)
+'''
 
-
-@app.route('/new_calculation')
+'''@app.route('/new_calculation')
 def newCalculation():
-    if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
-        return redirect(url_for('login', proxima=url_for('newCalculation')))
+    if 'userConnected' not in session or session['userConnected'] == None:
+        return redirect(url_for('login', nextPage=url_for('newCalculation')))
 
-    usuario = usuario_dao.busca_por_id(id=session['usuario_id'])
+    usuario = usuario_dao.busca_por_id(id=session['userId'])
     cultivos = cultivo_dao.listar()
     return render_template('newCalculation.html', titulo='Cancular', usuarios=usuario, cultivos=cultivos)
+'''
 
-
-@app.route('/save_calculation', methods=['POST', ])
+'''@app.route('/save_calculation', methods=['POST', ])
 def saveCalculation():
-    id_usuario = session['usuario_id']
+    id_usuario = session['userId']
     has_cultivadas = request.form['has_cultivadas']
     agua_disponible = request.form['agua_disponible']
     horas_riego = request.form['horas_riego']
@@ -138,60 +182,36 @@ def saveCalculation():
 
     # Calculo GEKKO
 
-    return redirect(url_for('show_report'))
+    return redirect(url_for('show_report'))'''
 
-
-@app.route('/detalle_solicitud/<int:id>')
+'''@app.route('/detalle_solicitud/<int:id>')
 def detalle_solicitud(id):
-    if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
-        return redirect(url_for('login', proxima=url_for('detalle_solicitud')))
+    if 'userConnected' not in session or session['userConnected'] == None:
+        return redirect(url_for('login', nextPage=url_for('detalle_solicitud')))
+
     solicitud = solicitud_dao.busca_por_id(id)
     usuario = usuario_dao.busca_por_id(solicitud.id_usuario)
     detalles = solicitud_detalle_dao.listar(solicitud.id)
     return render_template('detalle_solicitud.html', titulo='Detalle solicitud', solicitud=solicitud, usuario=usuario, detalles=detalles)
+'''
 
-
-# auth
-@app.route('/login')
-def login():
-    proxima = request.args.get('proxima')
-    return render_template('login.html', proxima=proxima)
-
-
-@app.route('/autenticar', methods=['POST', ])
-def autenticar():
-    usuario = usuario_dao.busca_por_usuario(request.form['usuario'])
-    if usuario is not None and usuario.senha == request.form['senha']:
-        session['usuario_conectado'] = True
-        session['usuario_id'] = usuario.id
-        session['usuario_usuario'] = usuario.usuario
-        flash(usuario.nombre + ' conectado con éxito!')
-        proxima = request.form['proxima']
-        return redirect(proxima)
-    else:
-        flash('No conectado intente de nuevo')
-        return redirect(url_for('login'))
-
-    return redirect(url_for('login'))
-
-
-@app.route('/logout')
-def logout():
-    session['usuario_conectado'] = None
-    flash('Ningún usuario conectado!')
-    return redirect(url_for('home'))
+# CULTIVOS
 
 
 @app.route('/listCropType')
 def listCropType():
+    if 'userConnected' not in session or session['userConnected'] == None:
+        return redirect(url_for('login', nextPage=url_for('listCropType')))
+
     listCropType = cultivo_dao.listar()
     return render_template('listCropType.html', titulo='Tipos de cultivos', cropTypes=listCropType)
 
 
 @app.route('/newCropType')
 def newCropType():
-    # if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
-    # return redirect(url_for('login', proxima=url_for('adicionar_cultivo')))
+    if 'userConnected' not in session or session['userConnected'] == None:
+        return redirect(url_for('login', nextPage=url_for('newCropType')))
+
     return render_template('newCropType.html', titulo='Agregar nuevo tipo de cultivo')
 
 
@@ -207,8 +227,8 @@ def saveNewCropType():
 
 @app.route('/updateCropType/<int:id>')
 def updateCropType(id):
-    # if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
-    # return redirect(url_for('login', proxima=url_for('editar_cultivo', id=id)))
+    if 'userConnected' not in session or session['userConnected'] == None:
+        return redirect(url_for('login', nextPage=url_for('updateCropType')))
 
     updateCropType = cultivo_dao.busca_por_id(id)
     return render_template('updateCropType.html', titulo='Editar cultivo', cropType=updateCropType)
@@ -229,22 +249,24 @@ def saveCropTypeUpdated():
 @app.route('/removeCropType/<int:id>')
 def removeCropType(id):
     cultivo_dao.deletar(id)
-    flash('El tipo de cultivo fue eliminado')
+    flash('El tipo de cultivo fue eliminado con éxito')
     return redirect(url_for('listCropType'))
+
+# CALCULOS
 
 
 @app.route('/newCalc')
 def newCalc():
-    # if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
-    # return redirect(url_for('login', proxima=url_for('adicionar_cultivo')))
+    if 'userConnected' not in session or session['userConnected'] == None:
+        return redirect(url_for('login', nextPage=url_for('newCalc')))
     listCropType = cultivo_dao.listar()
     return render_template('newCalc.html', titulo='Solicitar nuevo calculo de riego', cropTypes=listCropType)
 
 
 @app.route('/saveNewCalc', methods=['POST', ])
 def saveNewCalc():
-    id_usuario = 5
-    has_cultivadas = 5
+    id_usuario = session['userId']
+    has_cultivadas = session['userHas']
     agua_disponible = request.form['agua_disponible']
     horas_riego = request.form['horas_riego']
     hora_inicio = request.form['hora_inicio']
@@ -267,23 +289,21 @@ def saveNewCalc():
 
     # return redirect(url_for('show_report'))
 
+
 @app.route('/showCalcResult/<int:requestId>')
 def showCalcResult(requestId):
-    # if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
-    # return redirect(url_for('login', proxima=url_for('adicionar_cultivo')))
+    if 'userConnected' not in session or session['userConnected'] == None:
+        return redirect(url_for('login', nextPage=url_for('newCalc')))
    # listCropType = cultivo_dao.listar()
     return render_template('showCalcResult.html', titulo='Calculo de riego')
 
-@app.route('/newCalcdd')
-def newCasslc():
-    if 'usuario_conectado' not in session or session['usuario_conectado'] == None:
-        return redirect(url_for('login', proxima=url_for('newCalc')))
-    id = session['usuario_id']
 
-    usuario = usuario_dao.busca_por_id(id=session['usuario_id'])
-    cultivos = cultivo_dao.listar()
-    return render_template('newCalc.html', titulo='Calcular', usuarios=usuario, cultivos=cultivos)
-
+@app.route('/listLastResults/')
+def listLastResults():
+    if 'userConnected' not in session or session['userConnected'] == None:
+        return redirect(url_for('login', nextPage=url_for('listCropType')))
+    listAllResults = solicitud_dao.listar_solicitudes_usuarios(session['userId'])
+    return render_template('listLastCalcs.html', titulo='Ultimos resultados', lastRequests=listAllResults)
 
 if __name__ == '__main__':
     app.run(debug=True)

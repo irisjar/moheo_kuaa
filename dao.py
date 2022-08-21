@@ -17,7 +17,8 @@ SQL_CREA_SOLICITUD = 'INSERT INTO solicitud(id_usuario, has_cultivadas, agua_dis
 SQL_ACTUALIZA_SOLICITUD = 'UPDATE solicitud SET id_usuario = %s, has_cultivadas = %s, agua_disponible = %s, horas_riego = %s, lineas_riego = %s, hora_inicio = %s WHERE id = %s'
 SQL_SOLICITUD_POR_ID = 'SELECT id, id_usuario, has_cultivadas, agua_disponible, horas_riego, lineas_riego, hora_inicio  FROM solicitud WHERE id = %s'
 SQL_BUSCA_SOLICITUDES = 'SELECT id, id_usuario, has_cultivadas, agua_disponible, horas_riego, lineas_riego, hora_inicio FROM solicitud'
-SQL_BUSCA_SOLICITUDES_USUARIOS = 'SELECT id, id_usuario, has_cultivadas, agua_disponible, horas_riego, lineas_riego, hora_inicio FROM solicitud'
+SQL_BUSCA_SOLICITUDES_USUARIOS = 'SELECT id, id_usuario, has_cultivadas, agua_disponible, horas_riego, lineas_riego, hora_inicio FROM solicitud WHERE id_usuario=%s'
+
 
 SQL_CREA_SOLICITUD_DETALLE = 'INSERT INTO solicitud_detalle (id_solicitud, id_cultivo, cantidad_plantas) VALUES (%s, %s, %s)'
 SQL_ACTUALIZA_SOLICITUD_DETALLE = 'UPDATE solicitud_detalle SET id_solicitud = %s, id_cultivo = %s, cantidad_plantas = %s  WHERE id = %s'
@@ -132,9 +133,10 @@ class SolicitudDao:
         solicitudes = traduce_solicitudes(cursor.fetchall())
         return solicitudes
 
-    def listar_solicitudes_usuarios(self):
+    def listar_solicitudes_usuarios(self,userId):
+        print("llega id:"+str('userId'))
         cursor = self.__db.cursor()
-        cursor.execute(SQL_BUSCA_SOLICITUDES_USUARIOS)
+        cursor.execute(SQL_BUSCA_SOLICITUDES_USUARIOS,(userId,))
         solicitudes_usuarios = traduce_solicitudes_usuarios(cursor.fetchall())
         return solicitudes_usuarios
 

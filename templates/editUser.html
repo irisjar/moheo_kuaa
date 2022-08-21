@@ -45,7 +45,7 @@
       <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
         <div class="container">
           <div class="row justify-content-center">
-            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+            <div class="col-lg-6 col-md-6 d-flex flex-column align-items-center justify-content-center">
 
               <div class="d-flex justify-content-center py-4">
                 <a href="index.html" class="logo d-flex align-items-center w-auto">
@@ -54,7 +54,7 @@
                 </a>
               </div><!-- End Logo -->
 
-              <div class="card mb-3">
+              <div class="card mb-3 ">
 
                 <div class="card-body">
 
@@ -77,7 +77,7 @@
                       <div class="invalid-feedback">Favor ingrese un e-mail valido!</div>
                     </div>
 
-                    <div class="col-12">
+                    <div class="col-6">
                       <label for="yourciruc" class="form-label">Cedula/Ruc</label>
                       <div class="input-group has-validation">
                         <input type="text" name="ciruc" class="form-control" id="ciruc" value="{{ usuario.ciruc }}" required>
@@ -85,12 +85,12 @@
                       </div>
                     </div>
 
-                    <div class="col-12">
+                    <div class="col-6">
                       <label for="yourCelular" class="form-label">Celular</label>
                       <input type="text" name="celular" class="form-control" id="yourCelular" value="{{ usuario.celular }}">
                     </div>
 
-                    <div class="col-12">
+                    <div class="col-6">
                       <label for="yourHas" class="form-label">Cantidad Has de su propiedad</label>
                       <input type="text" name="has" class="form-control" id="yourHas" value="{{ usuario.has }}">
                     </div>
@@ -101,20 +101,20 @@
                     </div>
 
                     
-                    <div class="col-12">
+                    <div class="col-6">
                       <label for="yourCiudad" class="form-label">Ciudad</label>
                       <input type="text" name="ciudad" class="form-control" id="yourCiudad" value="{{ usuario.ciudad }}">
                     </div>
                     
-                    <div class="col-12">
+                    <div class="col-6">
                       <label for="yourDepartamento" class="form-label">Departamento</label>
                       <input type="text" name="departamento" class="form-control" id="yourDepartamento" value="{{ usuario.departamento }}">
                     </div>
-                    <div class="col-12">
-                      <button class="btn btn-primary w-100" type="submit">Actualizar datos</button>
+                    <div class="col-6">
+                      <button class="btn btn-primary w-100" type="submit">Guardar</button>
                     </div>
-                    <div class="col-12">
-                      <p class="small mb-0">Cancelar <a href="{{ url_for('home') }}"></a></p>
+                    <div class="col-6">
+                      <a href="{{ url_for('home') }}"><p class="btn btn-danger w-100">Cancelar</p></a>
                     </div>
                   </form>
 

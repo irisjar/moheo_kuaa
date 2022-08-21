@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Pages / Login - NiceAdmin Bootstrap Template</title>
+  <title>Mohe'&otilde Kua'a</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -15,7 +15,9 @@
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    rel="stylesheet">
 
   <!-- Vendor CSS Files -->
   <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -39,10 +41,10 @@
 
 <body>
 
-  
+
   <main>
     <div class="container">
-      
+
       <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
         <div class="container">
           <div class="row justify-content-center">
@@ -56,7 +58,6 @@
               </div><!-- End Logo -->
 
               <div class="card mb-3">
-
                 <div class="card-body">
 
                   <div class="pt-4 pb-2">
@@ -64,8 +65,8 @@
                     <p class="text-center small">Ingrese su usuario y contraseña para entrar</p>
                   </div>
 
-                  <form class="row g-3 needs-validation" novalidate method="POST" action="{{ url_for('autenticar') }}">
-                    <input type="hidden" name="proxima" value="{{ proxima or url_for('home') }}">
+                  <form class="row g-3 needs-validation" method="POST" action="{{ url_for('auth') }}">
+                    <input type="hidden" name="nextPage" value="{{ nextPage or url_for('home') }}">
                     <div class="col-12">
                       <label for="usuario" class="form-label">Usuario</label>
                       <div class="input-group has-validation">
@@ -77,15 +78,28 @@
 
                     <div class="col-12">
                       <label for="yourPassword" class="form-label">Contraseña</label>
-                      <input type="senha" name="senha" class="form-control" id="yourPassword" required>
+                      <input type="password" name="senha" class="form-control" id="yourPassword" required>
                       <div class="invalid-feedback">Favor ingrese su contraseña</div>
                     </div>
 
                     <div class="col-12">
                       <button class="btn btn-primary w-100" type="submit">Entrar</button>
                     </div>
+
                     <div class="col-12">
-                      <p class="small mb-0">No tienes una cuenta? <a href="{{ url_for('newUser') }}">Crea una cuenta</a></p>
+                      {% with messages = get_flashed_messages() %}
+                      {% if messages %}
+                      <ul id="messages" class="list-unstyled">
+                        {% for message in messages %}
+                        <li class="alert alert-success">{{ message }}</li>
+                        {% endfor %}
+                      </ul>
+                      {% endif %}
+                      {% endwith %}
+                    </div>
+                    <div class="col-12">
+                      <p class="small mb-0">No tienes una cuenta? <a href="{{ url_for('newUser') }}">Crea una cuenta</a>
+                      </p>
                     </div>
                   </form>
 
@@ -93,11 +107,11 @@
               </div>
 
               <!--<div class="credits">-->
-                <!-- All the links in the footer should remain intact. -->
-                <!-- You can delete the links only if you purchased the pro version. -->
-                <!-- Licensing information: https://bootstrapmade.com/license/ -->
-                <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
-                <!--Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+              <!-- All the links in the footer should remain intact. -->
+              <!-- You can delete the links only if you purchased the pro version. -->
+              <!-- Licensing information: https://bootstrapmade.com/license/ -->
+              <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
+              <!--Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
               </div>-->
 
             </div>
@@ -105,11 +119,12 @@
         </div>
 
       </section>
-  
+
     </div>
   </main><!-- End #main -->
- 
-  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+      class="bi bi-arrow-up-short"></i></a>
 
   <!-- Vendor JS Files -->
   <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>

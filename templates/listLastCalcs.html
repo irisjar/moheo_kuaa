@@ -1,0 +1,50 @@
+{% extends "template.html" %}
+{% block contenido %}
+
+<div class="col-12">
+  <div class="card recent-sales overflow-auto">
+
+    <div class="card-body">
+      <br>
+      <div class="col-12" style="text-align: right;"><a class="btn btn-success" href="{{ url_for('newCalc') }}"><i
+        class="bi bi-plus-square"> Nueva solicitud</i></a></div>
+        <br>
+
+      <table class="table table-borderless datatable">
+        <thead>
+          <tr>
+            <th scope="col">Id<br> solicitud</th>
+            <th scope="col">Has <br>cultivadas</th>
+            <th scope="col">Agua <br>Disponible</th>
+            <th scope="col">Hora de <br>Inicio</th>
+            <th scope="col">Horas de <br>Riego</th>
+            <th scope="col">Lineas de <br>Riego</th>
+            <th scope="col"></th>
+
+          </tr>
+        </thead>
+        <tbody>
+          {% for req in lastRequests %}
+          <tr>
+            <th scope="row"><a href="#">{{ req.id }}</a></th>
+            <td>{{ req.has_cultivadas }}</td>
+            <td>{{ req.agua_disponible }}</td>
+            <td>{{ req.hora_inicio }}</td>
+            <td>{{ req.horas_riego }}</td>
+            <td>{{ req.lineas_riego }}</td>
+
+            <td><a class="btn btn-primary" href="{{ url_for('showCalcResult', requestId=req.id) }}"><i
+                  class="bi bi-calculator"> Resultados</i></a>
+
+            </td>
+          </tr>
+          {% endfor %}
+
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
+</div><!-- End Recent Sales -->
+{% endblock %}
